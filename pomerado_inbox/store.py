@@ -43,7 +43,7 @@ def classify(job):
     if job.get('status') in {'queued','running'}:return 'pending',''
     if job.get('status') in {'needs_input','paused'}:return 'needs_attention','job needs owner input; no answer sent'
     if job.get('result_status') in {'delivered','expired'} and job.get('result') is None:return 'unavailable','remote result already delivered or expired'
-    if job.get('result_file') or job.get('build',{} ) and isinstance(job.get('build'),dict) and job['build'].get('example_result_file') or has_files(job.get('result')):return 'needs_attention','file result preserved as metadata; single-use file bytes not downloaded'
+    if job.get('result_file') or (isinstance(job.get('build'),dict) and job['build'].get('example_result_file')) or has_files(job.get('result')):return 'needs_attention','file result preserved as metadata; single-use file bytes not downloaded'
     if job.get('status')=='succeeded' and job.get('result_status') not in {'delivered','expired'}:
         # null can be a real JSON output. Presence of the field plus available status matters.
         if 'result' in job and (job['result'] is not None or job.get('result_status') in {'available','ready'}):return 'captured',''
